@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Belectronics | مختبر الإلكترونيات والبرمجة والأردوينو</title>
+    
+    <!-- استدعاء خطوط عربية حديثة وعصرية (Cairo & Tajawal) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- مكتبة أيقونات Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- تخصيص إعدادات Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        tajawal: ['Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        labDark: '#0b1120',
+                        labCard: '#1e293b',
+                        labCyan: '#06b6d4',
+                        labEmerald: '#10b981',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- تنسيقات مخصصة لنمط اللوحات الإلكترونية (PCB) والتأثيرات -->
+    <style>
+        body {
+            background-color: #0b1120;
+            color: #f8fafc;
+            font-family: 'Cairo', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* خلفية بنمط شبكة الدوائر الإلكترونية الدقيقة */
+        .pcb-grid {
+            background-image: 
+                radial-gradient(rgba(6, 182, 212, 0.15) 1px, transparent 1px),
+                linear-gradient(to right, rgba(30, 41, 59, 0.35) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(30, 41, 59, 0.35) 1px, transparent 1px);
+            background-size: 32px 32px, 64px 64px, 64px 64px;
+            background-position: 0 0, 0 0, 0 0;
+        }
+
+        /* توهج نيون ناعم */
+        .glow-cyan {
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.25);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-6px);
+            border-color: rgba(6, 182, 212, 0.6);
+            box-shadow: 0 12px 30px -10px rgba(6, 182, 212, 0.3);
+        }
+
+        /* شريط تمرير مخصص */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b1120;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+        }
+    </style>
+</head>
+<body class="pcb-grid min-h-screen flex flex-col selection:bg-cyan-500 selection:text-slate-900">
+
+    <!-- ==================== شريط التنقل العلوي (Navbar) ==================== -->
+    <header class="sticky top-0 z-40 bg-[#0b1120]/90 backdrop-blur-md border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- الشعار -->
+                <a href="#home" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+                        <div class="w-full h-full bg-[#0b1120] rounded-[10px] flex items-center justify-center">
+                            <i class="fa-solid fa-microchip text-cyan-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-xl sm:text-2xl font-black tracking-wide bg-gradient-to-l from-cyan-400 to-emerald-400 bg-clip-text text-transparent" dir="ltr">
+                            K-Belectronics
+                        </span>
+                        <span class="block text-[11px] text-slate-400 font-tajawal -mt-1">مختبر الإلكترونيات والأردوينو</span>
+                    </div>
+                </a>
+
+                <!-- روابط سطح المكتب -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-bold">
+                    <a href="#home" class="text-slate-200 hover:text-cyan-400 transition-colors">الرئيسية</a>
+                    <a href="#specialties" class="text-slate-200 hover:text-cyan-400 transition-colors">مجالات العمل</a>
+                    <a href="#channels" class="text-slate-200 hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                        <span>القنوات والفيديوهات</span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    </a>
+                    <a href="#contact" class="px-5 py-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500 hover:text-slate-950 transition-all">
+                        تواصل معي
+                    </a>
+                </nav>
+
+                <!-- زر القائمة للهواتف -->
+                <button id="mobile-menu-btn" aria-label="فتح القائمة" class="md:hidden p-3 rounded-xl bg-slate-800/80 text-slate-200 hover:text-cyan-400 border border-slate-700">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- القائمة المنسدلة للهواتف -->
+        <div id="mobile-menu" class="hidden md:hidden bg-[#0f172a] border-b border-slate-800 px-4 pt-2 pb-5 space-y-2">
+            <a href="#home" class="block px-4 py-3 rounded-xl text-slate-200 hover:bg-slate-800 hover:text-cyan-400 font-bold">الرئيسية</a>
+            <a href="#specialties" class="block px-4 py-3 rounded-xl text-slate-200 hover:bg-slate-800 hover:text-cyan-400 font-bold">مجالات العمل</a>
+            <a href="#channels" class="block px-4 py-3 rounded-xl text-slate-200 hover:bg-slate-800 hover:text-cyan-400 font-bold">القنوات والفيديوهات (تحديث تلقائي)</a>
+            <a href="#contact" class="block px-4 py-3 rounded-xl bg-cyan-500/20 text-cyan-400 font-bold text-center mt-2">تواصل معي</a>
+        </div>
+    </header>
+
+    <!-- ==================== القسم الرئيسي (Hero Section) ==================== -->
+    <main class="flex-grow">
+        <section id="home" class="relative pt-12 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
+            <!-- إضاءة خلفية جمالية -->
+            <div class="absolute top-10 right-1/4 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-10 left-1/4 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <!-- النص التعريفي -->
+                    <div class="lg:col-span-7 text-center lg:text-right space-y-6">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/90 border border-cyan-500/30 text-cyan-400 text-xs sm:text-sm font-bold">
+                            <i class="fa-solid fa-bolt text-emerald-400"></i>
+                            <span>مرحباً بك في عالم الإلكترونيات والابتكار التقني</span>
+                        </div>
+
+                        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black leading-tight text-white">
+                            نحوّل الأفكار إلى
+                            <span class="bg-gradient-to-l from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
+                                دوائر ذكية ومشاريع أردوينو
+                            </span>
+                        </h1>
+
+                        <p class="text-slate-300 font-tajawal text-base sm:text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                            في <strong class="text-cyan-400" dir="ltr">K-Belectronics</strong> نغوص في أعماق البرمجة وتجربة الدوائر الإلكترونية، فحص الدارات الكهربائية وتشخيص الأعطال بدقة، وبناء مشاريع عملية متكاملة باستخدام لوحات <strong>Arduino</strong> والمتحكمات الدقيقة.
+                        </p>
+
+                        <!-- أزرار الإجراءات -->
+                        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                            <a href="#channels" class="px-7 py-4 rounded-xl bg-gradient-to-l from-cyan-500 to-emerald-500 text-slate-950 font-extrabold text-base shadow-lg shadow-cyan-500/25 hover:opacity-95 transition-all flex items-center gap-2.5">
+                                <i class="fa-brands fa-youtube text-xl"></i>
+                                <span>شاهد أحدث الفيديوهات</span>
+                            </a>
+                            <a href="#contact" class="px-7 py-4 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-white border border-slate-700 hover:border-cyan-500/50 font-bold text-base transition-all flex items-center gap-2.5">
+                                <i class="fa-solid fa-paper-plane text-cyan-400"></i>
+                                <span>تواصل معي</span>
+                            </a>
+                        </div>
+
+                        <!-- إحصائيات سريعة -->
+                        <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800/80 max-w-lg mx-auto lg:mx-0">
+                            <div>
+                                <div class="text-2xl sm:text-3xl font-black text-cyan-400">2</div>
+                                <div class="text-xs sm:text-sm text-slate-400 font-tajawal">قنوات تقنية متخصصة</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl sm:text-3xl font-black text-emerald-400">+100</div>
+                                <div class="text-xs sm:text-sm text-slate-400 font-tajawal">تجربة ودارة إلكترونية</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl sm:text-3xl font-black text-cyan-400">24/7</div>
+                                <div class="text-xs sm:text-sm text-slate-400 font-tajawal">تحديث تلقائي للمحتوى</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- بطاقة بصرية تمثل لوحة أردوينو / مختبر إلكترونيات -->
+                    <div class="lg:col-span-5">
+                        <div class="relative bg-[#1e293b]/90 backdrop-blur-xl border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-2xl glow-cyan">
+                            <!-- شريط علوي يشبه نافذة الكود / الراسم -->
+                            <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-700/70">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                                    <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                                    <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                </div>
+                                <span class="text-xs font-mono text-cyan-400 bg-cyan-950/60 px-3 py-1 rounded-lg border border-cyan-500/20" dir="ltr">
+                                    KBelectronics_Lab.ino
+                                </span>
+                            </div>
+
+                            <!-- كود أردوينو تفاعلي جمالي -->
+                            <pre class="text-xs sm:text-sm font-mono text-slate-300 bg-[#0b1120] p-4 rounded-2xl border border-slate-800 overflow-x-auto leading-relaxed" dir="ltr"><code><span class="text-cyan-400">#include</span> <span class="text-emerald-400">&lt;Arduino.h&gt;</span>
+
+<span class="text-slate-500">// مختبر K-Belectronics للإلكترونيات</span>
+<span class="text-purple-400">void</span> <span class="text-amber-300">setup</span>() {
+  Serial.begin(<span class="text-emerald-400">115200</span>);
+  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.println(<span class="text-emerald-300">"System Ready: Testing Circuits..."</span>);
+}
+
+<span class="text-purple-400">void</span> <span class="text-amber-300">loop</span>() {
+  analyzeCircuitFaults();
+  runArduinoProject();
+}</code></pre>
+
+                            <!-- مؤشرات الحالة الحية -->
+                            <div class="mt-5 grid grid-cols-2 gap-3">
+                                <div class="bg-[#0b1120]/80 p-3.5 rounded-2xl border border-slate-800 flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-cyan-500/15 flex items-center justify-center text-cyan-400">
+                                        <i class="fa-solid fa-wave-square"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs text-slate-400">فحص الإشارة</div>
+                                        <div class="text-sm font-bold text-white">5.0V مستقر</div>
+                                    </div>
+                                </div>
+                                <div class="bg-[#0b1120]/80 p-3.5 rounded-2xl border border-slate-800 flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400">
+                                        <i class="fa-solid fa-code-branch"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs text-slate-400">حالة القنوات</div>
+                                        <div class="text-sm font-bold text-emerald-400">مزامنة نشطة</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== مجالات العمل والخبرة (Specialties) ==================== -->
+        <section id="specialties" class="py-20 bg-[#0f172a]/70 border-y border-slate-800/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-14 space-y-3">
+                    <span class="text-cyan-400 font-bold text-sm tracking-wider uppercase">خبرات ومهارات المختبر</span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-white">مجالات العمل والتجارب التقنية</h2>
+                    <p class="text-slate-400 font-tajawal text-base sm:text-lg">
+                        نجمع بين الجانب النظري والتطبيق العملي المباشر في عالم الإلكترونيات والبرمجة وصيانة الدارات.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- البطاقة 1 -->
+                    <div class="bg-[#1e293b]/80 border border-slate-700/70 rounded-2xl p-6 card-hover">
+                        <div class="w-14 h-14 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl mb-5">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-white mb-2.5">مشاريع الأردوينو</h3>
+                        <p class="text-slate-400 font-tajawal text-sm leading-relaxed">
+                            تصميم وبرمجة مشاريع متكاملة باستخدام لوحات Arduino وESP32 وربط الحساسات والمحركات وشاشات العرض بذكاء.
+                        </p>
+                    </div>
+
+                    <!-- البطاقة 2 -->
+                    <div class="bg-[#1e293b]/80 border border-slate-700/70 rounded-2xl p-6 card-hover">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl mb-5">
+                            <i class="fa-solid fa-magnifying-glass-chart"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-white mb-2.5">تجربة الدوائر الإلكترونية</h3>
+                        <p class="text-slate-400 font-tajawal text-sm leading-relaxed">
+                            بناء واختبار الدوائر الإلكترونية على لوحات التجارب (Breadboard)، وقياس الجهد والتيار وتحليل سلوك المركبات الإلكترونية.
+                        </p>
+                    </div>
+
+                    <!-- البطاقة 3 -->
+                    <div class="bg-[#1e293b]/80 border border-slate-700/70 rounded-2xl p-6 card-hover">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl mb-5">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-white mb-2.5">تشخيص الأعطال الكهربائية</h3>
+                        <p class="text-slate-400 font-tajawal text-sm leading-relaxed">
+                            تتبع مسارات الدارات الكهربائية، اكتشاف القطع التالفة باستخدام الملتيميتر وأجهزة الفحص، وإصلاح الأعطال باحترافية.
+                        </p>
+                    </div>
+
+                    <!-- البطاقة 4 -->
+                    <div class="bg-[#1e293b]/80 border border-slate-700/70 rounded-2xl p-6 card-hover">
+                        <div class="w-14 h-14 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 text-2xl mb-5">
+                            <i class="fa-solid fa-code"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-white mb-2.5">البرمجة والأنظمة المدمجة</h3>
+                        <p class="text-slate-400 font-tajawal text-sm leading-relaxed">
+                            كتابة الأكواد البرمجية بلغة C/C++ للمتحكمات الدقيقة وتطوير حلول أتمتة ذكية تسهل التحكم في الأجهزة الإلكترونية.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== قسم قنوات اليوتيوب والتحديث التلقائي ==================== -->
+        <section id="channels" class="py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- رأس القسم -->
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
+                    <div class="space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span id="sync-status-text">تحديث تلقائي متصل بمحتوى القناتين</span>
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl font-black text-white">قنوات اليوتيوب وأحدث الفيديوهات</h2>
+                        <p class="text-slate-400 font-tajawal text-base max-w-2xl">
+                            يتم جلب وعرض أحدث الفيديوهات المرفوعة على قناتيّ تلقائياً فور نشرها على يوتيوب لتبقى على اطلاع دائم بكل جديد.
+                        </p>
+                    </div>
+
+                    <!-- أزرار التحكم بالمزامنة -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div id="channels-live-badges" class="flex flex-wrap items-center gap-2 text-xs">
+                            <span id="badge-kbelectronics" class="px-3 py-1.5 rounded-lg bg-slate-800/90 border border-slate-700 text-slate-300 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                                <span dir="ltr">K-Belectronics: ...</span>
+                            </span>
+                            <span id="badge-dzelectroniclab" class="px-3 py-1.5 rounded-lg bg-slate-800/90 border border-slate-700 text-slate-300 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                                <span dir="ltr">DZ Electronic Lab: ...</span>
+                            </span>
+                        </div>
+                        <button id="refresh-videos-btn" class="px-4 py-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500 hover:text-slate-950 text-cyan-400 border border-cyan-500/40 font-bold text-sm flex items-center gap-2 transition-all">
+                            <i id="refresh-icon" class="fa-solid fa-rotate"></i>
+                            <span>تحديث الفيديوهات</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- بطاقتا القناتين الرسميتين -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                    <!-- القناة الأولى: K-Belectronics -->
+                    <div class="bg-gradient-to-l from-[#1e293b] to-[#162032] border border-cyan-500/30 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-lg">
+                        <div class="flex items-center gap-4 text-center sm:text-right flex-col sm:flex-row">
+                            <div class="w-16 h-16 rounded-2xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-400 text-3xl shrink-0">
+                                <i class="fa-brands fa-youtube"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-center sm:justify-start gap-2">
+                                    <h3 class="text-xl font-black text-white" dir="ltr">K-Belectronics</h3>
+                                    <span class="text-[11px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold">القناة الأولى</span>
+                                </div>
+                                <p class="text-slate-400 text-sm font-tajawal mt-1">شروحات الأردوينو، البرمجة، وتجارب الدوائر الإلكترونية العملية.</p>
+                            </div>
+                        </div>
+                        <a href="https://youtube.com/@k-belectronics?si=gZWCHSSFR0A6nmkM" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shrink-0 shadow-lg shadow-rose-600/20">
+                            <i class="fa-brands fa-youtube text-lg"></i>
+                            <span>زيارة واشتراك</span>
+                        </a>
+                    </div>
+
+                    <!-- القناة الثانية: DZ Electronic Lab -->
+                    <div class="bg-gradient-to-l from-[#1e293b] to-[#162032] border border-emerald-500/30 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-lg">
+                        <div class="flex items-center gap-4 text-center sm:text-right flex-col sm:flex-row">
+                            <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 text-3xl shrink-0">
+                                <i class="fa-brands fa-youtube"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-center sm:justify-start gap-2">
+                                    <h3 class="text-xl font-black text-white" dir="ltr">DZ Electronic Lab</h3>
+                                    <span class="text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">القناة الثانية</span>
+                                </div>
+                                <p class="text-slate-400 text-sm font-tajawal mt-1">مختبر الإلكترونيات، فحص الدارات الكهربائية، وتشخيص الأعطال.</p>
+                            </div>
+                        </div>
+                        <a href="https://youtube.com/@dzelectroniclab?si=MH_NqjxKCXofWNCS" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shrink-0 shadow-lg shadow-rose-600/20">
+                            <i class="fa-brands fa-youtube text-lg"></i>
+                            <span>زيارة واشتراك</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- أزرار تصفية الفيديوهات حسب القناة -->
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-8 bg-[#1e293b]/60 p-3 rounded-2xl border border-slate-800">
+                    <div class="flex flex-wrap items-center gap-2" id="filter-tabs">
+                        <button data-filter="all" class="filter-btn active px-5 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-extrabold text-sm transition-all">
+                            الكل (جميع الفيديوهات)
+                        </button>
+                        <button data-filter="kbelectronics" class="filter-btn px-5 py-2.5 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white font-bold text-sm transition-all" dir="ltr">
+                            K-Belectronics
+                        </button>
+                        <button data-filter="dzelectroniclab" class="filter-btn px-5 py-2.5 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white font-bold text-sm transition-all" dir="ltr">
+                            DZ Electronic Lab
+                        </button>
+                    </div>
+                    <div class="relative w-full sm:w-64">
+                        <input type="text" id="video-search-input" placeholder="ابحث عن فيديو..." class="w-full px-4 py-2 pr-10 rounded-xl bg-[#0b1120] border border-slate-700 text-white text-xs focus:outline-none focus:border-cyan-400">
+                        <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- شبكة عرض الفيديوهات -->
+                <div id="videos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- يتم تعبئة الفيديوهات تلقائياً عبر الجافاسكربت -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== قسم التواصل والاتصال (Contact) ==================== -->
+        <section id="contact" class="py-20 bg-[#0f172a]/80 border-t border-slate-800/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-14 space-y-3">
+                    <span class="text-emerald-400 font-bold text-sm">يسعدني تواصلك واستفساراتك التقنية</span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-white">معلومات التواصل والاتصال</h2>
+                    <p class="text-slate-400 font-tajawal text-base">
+                        للاستفسار حول مشاريع الأردوينو، الدوائر الإلكترونية، أو للتعاون التقني، يمكنك التواصل معي مباشرة عبر القنوات التالية.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <!-- بطاقات وسائل التواصل المباشر -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <!-- البريد الإلكتروني -->
+                        <div class="bg-[#1e293b]/90 border border-slate-700/80 rounded-2xl p-5 flex items-center justify-between gap-4 card-hover">
+                            <div class="flex items-center gap-4 min-w-0">
+                                <div class="w-12 h-12 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-xs text-slate-400 font-bold">البريد الإلكتروني الرسمي</div>
+                                    <a href="mailto:dzelectroniclab@gmail.com" class="text-sm sm:text-base font-bold text-white hover:text-cyan-400 truncate block" dir="ltr">
+                                        dzelectroniclab@gmail.com
+                                    </a>
+                                </div>
+                            </div>
+                            <button id="copy-email-btn" title="نسخ البريد الإلكتروني" class="p-3 rounded-xl bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-cyan-400 border border-slate-700 transition-all shrink-0">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                        </div>
+
+                        <!-- حساب الفايسبوك -->
+                        <a href="https://www.facebook.com/share/1EHv4H9GnW/" target="_blank" rel="noopener noreferrer" class="bg-[#1e293b]/90 border border-slate-700/80 rounded-2xl p-5 flex items-center justify-between gap-4 card-hover block">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-blue-500/15 text-blue-400 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fa-brands fa-facebook-f"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-400 font-bold">صفحة الفايسبوك</div>
+                                    <div class="text-base font-bold text-white" dir="ltr">K-Belectronics Facebook</div>
+                                </div>
+                            </div>
+                            <span class="text-slate-400 text-sm"><i class="fa-solid fa-arrow-up-left-from-square"></i></span>
+                        </a>
+
+                        <!-- القناة الأولى -->
+                        <a href="https://youtube.com/@k-belectronics?si=gZWCHSSFR0A6nmkM" target="_blank" rel="noopener noreferrer" class="bg-[#1e293b]/90 border border-slate-700/80 rounded-2xl p-5 flex items-center justify-between gap-4 card-hover block">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fa-brands fa-youtube"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-400 font-bold">قناة اليوتيوب الأولى</div>
+                                    <div class="text-base font-bold text-white" dir="ltr">@k-belectronics</div>
+                                </div>
+                            </div>
+                            <span class="text-slate-400 text-sm"><i class="fa-solid fa-arrow-up-left-from-square"></i></span>
+                        </a>
+
+                        <!-- القناة الثانية -->
+                        <a href="https://youtube.com/@dzelectroniclab?si=MH_NqjxKCXofWNCS" target="_blank" rel="noopener noreferrer" class="bg-[#1e293b]/90 border border-slate-700/80 rounded-2xl p-5 flex items-center justify-between gap-4 card-hover block">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fa-brands fa-youtube"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-400 font-bold">قناة اليوتيوب الثانية</div>
+                                    <div class="text-base font-bold text-white" dir="ltr">@dzelectroniclab</div>
+                                </div>
+                            </div>
+                            <span class="text-slate-400 text-sm"><i class="fa-solid fa-arrow-up-left-from-square"></i></span>
+                        </a>
+                    </div>
+
+                    <!-- نموذج إرسال رسالة سريعة -->
+                    <div class="lg:col-span-7 bg-[#1e293b]/90 border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-xl">
+                        <h3 class="text-xl font-extrabold text-white mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-paper-plane text-cyan-400"></i>
+                            <span>أرسل رسالة سريعة إلى المختبر</span>
+                        </h3>
+                        <p class="text-slate-400 text-sm font-tajawal mb-6">
+                            اكتب رسالتك أو فكرة مشروعك وسيتم تجهيزها لإرسالها مباشرة إلى <span class="text-cyan-400 font-mono">dzelectroniclab@gmail.com</span>.
+                        </p>
+
+                        <form id="contact-form" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="sender-name" class="block text-sm font-bold text-slate-300 mb-1.5">الاسم الكامل</label>
+                                    <input type="text" id="sender-name" required placeholder="مثال: أحمد بن علي" class="w-full px-4 py-3 rounded-xl bg-[#0b1120] border border-slate-700 text-white focus:outline-none focus:border-cyan-400 text-sm">
+                                </div>
+                                <div>
+                                    <label for="sender-subject" class="block text-sm font-bold text-slate-300 mb-1.5">موضوع الرسالة</label>
+                                    <input type="text" id="sender-subject" required placeholder="استفسار حول مشروع أردوينو..." class="w-full px-4 py-3 rounded-xl bg-[#0b1120] border border-slate-700 text-white focus:outline-none focus:border-cyan-400 text-sm">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="sender-message" class="block text-sm font-bold text-slate-300 mb-1.5">تفاصيل الرسالة</label>
+                                <textarea id="sender-message" rows="4" required placeholder="اكتب سؤالك أو تفاصيل الدائرة الإلكترونية هنا..." class="w-full px-4 py-3 rounded-xl bg-[#0b1120] border border-slate-700 text-white focus:outline-none focus:border-cyan-400 text-sm"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-l from-cyan-500 to-emerald-500 text-slate-950 font-extrabold text-base hover:opacity-95 transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-envelope-open-text"></i>
+                                <span>إرسال عبر البريد الإلكتروني</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==================== التذييل (Footer) ==================== -->
+    <footer class="bg-[#080d19] border-t border-slate-800/90 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-microchip text-cyan-400 text-lg"></i>
+                <span class="font-black text-white" dir="ltr">K-Belectronics</span>
+                <span class="text-slate-500 text-sm">| جميع الحقوق محفوظة &copy; <span id="current-year"></span></span>
+            </div>
+            <div class="flex items-center gap-4 text-slate-400">
+                <a href="https://www.facebook.com/share/1EHv4H9GnW/" target="_blank" rel="noopener noreferrer" aria-label="فايسبوك" class="hover:text-blue-400 transition-colors text-lg">
+                    <i class="fa-brands fa-facebook"></i>
+                </a>
+                <a href="https://youtube.com/@k-belectronics?si=gZWCHSSFR0A6nmkM" target="_blank" rel="noopener noreferrer" aria-label="قناة K-Belectronics" class="hover:text-rose-500 transition-colors text-lg">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+                <a href="https://youtube.com/@dzelectroniclab?si=MH_NqjxKCXofWNCS" target="_blank" rel="noopener noreferrer" aria-label="قناة DZ Electronic Lab" class="hover:text-emerald-400 transition-colors text-lg">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+                <a href="mailto:dzelectroniclab@gmail.com" aria-label="البريد الإلكتروني" class="hover:text-cyan-400 transition-colors text-lg">
+                    <i class="fa-solid fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== نافذة تشغيل الفيديو المنبثقة (Video Modal) ==================== -->
+    <div id="video-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#1e293b] border border-slate-700 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-700">
+                <h3 id="modal-video-title" class="text-base sm:text-lg font-bold text-white truncate pl-4">مشاهدة الفيديو</h3>
+                <button id="close-video-modal" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-rose-500 text-slate-300 hover:text-white flex items-center justify-center transition-colors shrink-0">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="aspect-video w-full bg-black">
+                <iframe id="modal-video-iframe" class="w-full h-full" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <div class="px-6 py-4 bg-[#0f172a] flex flex-wrap items-center justify-between gap-3">
+                <span id="modal-channel-badge" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-cyan-500/15 text-cyan-400"></span>
+                <a id="modal-youtube-link" href="#" target="_blank" rel="noopener noreferrer" class="text-sm font-bold text-rose-400 hover:text-rose-300 flex items-center gap-1.5">
+                    <span>فتح الفيديو على يوتيوب</span>
+                    <i class="fa-solid fa-arrow-up-left-from-square"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== إشعار منبثق (Toast Notification) ==================== -->
+    <div id="toast" class="fixed bottom-6 left-6 z-50 hidden bg-slate-900 border border-cyan-500/50 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 transition-all">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toast-message" class="text-sm font-bold">تمت العملية بنجاح</span>
+    </div>
+
+    <!-- ==================== المنطق البرمجي (JavaScript) ==================== -->
+    <script>
+        // تحديث السنة الحالية في التذييل
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // قائمة الهاتف المحمول
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // دالة إظهار الإشعارات الأنيقة (بديل alert)
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+
+        // نسخ البريد الإلكتروني بنقرة واحدة
+        document.getElementById('copy-email-btn').addEventListener('click', () => {
+            const emailText = 'dzelectroniclab@gmail.com';
+            const tempInput = document.createElement('input');
+            tempInput.value = emailText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast('تم نسخ البريد الإلكتروني: ' + emailText);
+        });
+
+        // معالجة نموذج التواصل
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('sender-name').value.trim();
+            const subject = document.getElementById('sender-subject').value.trim();
+            const message = document.getElementById('sender-message').value.trim();
+            const mailtoUrl = `mailto:dzelectroniclab@gmail.com?subject=${encodeURIComponent(subject + ' - من ' + name)}&body=${encodeURIComponent(message)}`;
+            window.location.href = mailtoUrl;
+            showToast('جاري فتح تطبيق البريد لإرسال رسالتك...');
+        });
+
+        // ==================== نظام جلب الفيديوهات التلقائي من قناتي اليوتيوب ====================
+        const CHANNELS_CONFIG = [
+            {
+                id: 'UCbXeI6bezru3rqgTJadhiSA',
+                uploadsPlaylistId: 'UUbXeI6bezru3rqgTJadhiSA',
+                key: 'kbelectronics',
+                name: 'K-Belectronics',
+                url: 'https://youtube.com/@k-belectronics?si=gZWCHSSFR0A6nmkM'
+            },
+            {
+                id: 'UCzwPIJ88dYi5NWtotiRXH1A',
+                uploadsPlaylistId: 'UUzwPIJ88dYi5NWtotiRXH1A',
+                key: 'dzelectroniclab',
+                name: 'DZ Electronic Lab',
+                url: 'https://youtube.com/@dzelectroniclab?si=MH_NqjxKCXofWNCS'
+            }
+        ];
+
+        let allVideos = [];
+        let currentFilter = 'all';
+        let searchQuery = '';
+        let isFallbackPlaylistMode = false;
+
+        // تحديث شارة حالة كل قناة على حدة
+        function updateChannelBadge(channelKey, channelName, state, text) {
+            const badge = document.getElementById(`badge-${channelKey}`);
+            if (!badge) return;
+            const dotColor = state === 'ok' ? 'bg-emerald-400' : (state === 'loading' ? 'bg-amber-400 animate-ping' : 'bg-cyan-400');
+            const borderColor = state === 'ok' ? 'border-emerald-500/40 text-emerald-300' : (state === 'loading' ? 'border-amber-500/40 text-amber-200' : 'border-cyan-500/40 text-cyan-300');
+            badge.className = `px-3 py-1.5 rounded-lg bg-slate-800/90 border ${borderColor} flex items-center gap-1.5 transition-all`;
+            badge.innerHTML = `<span class="w-2 h-2 rounded-full ${dotColor}"></span><span dir="ltr">${channelName}: ${text}</span>`;
+        }
+
+        // استخراج معرف فيديو يوتيوب من الرابط
+        function extractYouTubeId(url) {
+            if (!url) return '';
+            const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regExp);
+            return match ? match[1] : '';
+        }
+
+        // تحليل نص XML الخاص بخلاصة يوتيوب RSS
+        function parseYouTubeXML(xmlText, channel) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+            if (xmlDoc.querySelector('parsererror')) return [];
+            const entries = Array.from(xmlDoc.querySelectorAll('entry'));
+            return entries.map((entry, idx) => {
+                const ytVidNode = entry.getElementsByTagName('yt:videoId')[0] || entry.querySelector('videoId');
+                const idNode = entry.querySelector('id');
+                const vidId = (ytVidNode?.textContent || idNode?.textContent?.replace('yt:video:', '') || '').trim();
+                const title = (entry.querySelector('title')?.textContent || 'فيديو جديد').trim();
+                const published = (entry.querySelector('published')?.textContent || '').trim();
+                const linkNode = entry.querySelector('link[rel="alternate"]') || entry.querySelector('link');
+                const link = linkNode?.getAttribute('href') || (vidId ? `https://www.youtube.com/watch?v=${vidId}` : channel.url);
+                const pubDateObj = published ? new Date(published) : new Date();
+                const dateFormatted = published ? pubDateObj.toLocaleDateString('ar-DZ', {
+                    year: 'numeric', month: 'short', day: 'numeric'
+                }) : 'حديثاً';
+                return {
+                    id: `${channel.key}_xml_${idx}_${vidId}`,
+                    youtubeId: vidId,
+                    title: title,
+                    channelKey: channel.key,
+                    channelName: channel.name,
+                    channelUrl: link,
+                    pubDate: dateFormatted,
+                    pubTimestamp: pubDateObj.getTime(),
+                    thumbnail: vidId ? `https://i.ytimg.com/vi/${vidId}/hqdefault.jpg` : ''
+                };
+            }).filter(v => v.youtubeId);
+        }
+
+        // دالة مساعدة للجلب مع مهلة زمنية محددة لتفادي التعليق
+        async function fetchWithTimeout(url, timeoutMs = 6500) {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const res = await fetch(url, { signal: controller.signal });
+                clearTimeout(timer);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res;
+            } catch (err) {
+                clearTimeout(timer);
+                throw err;
+            }
+        }
+
+        // محرك جلب الفيديوهات التلقائي عبر 4 طرق مختلفة مستقرة وسريعة
+        async function fetchChannelRSS(channel) {
+            const feedUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channel.id}`;
+            const encodedFeed = encodeURIComponent(feedUrl);
+            updateChannelBadge(channel.key, channel.name, 'loading', 'جاري الجلب...');
+
+            // الطريقة 1: عبر rss2json API
+            try {
+                const res1 = await fetchWithTimeout(`https://api.rss2json.com/v1/api.json?rss_url=${encodedFeed}`);
+                const data1 = await res1.json();
+                if (data1.status === 'ok' && Array.isArray(data1.items) && data1.items.length > 0) {
+                    const videos = data1.items.map((item, idx) => {
+                        const vidId = extractYouTubeId(item.link);
+                        const pubDateObj = item.pubDate ? new Date(item.pubDate.replace(' ', 'T')) : new Date();
+                        const dateFormatted = pubDateObj.toLocaleDateString('ar-DZ', {
+                            year: 'numeric', month: 'short', day: 'numeric'
+                        });
+                        return {
+                            id: `${channel.key}_rss2json_${idx}_${vidId}`,
+                            youtubeId: vidId,
+                            title: item.title,
+                            channelKey: channel.key,
+                            channelName: channel.name,
+                            channelUrl: item.link || channel.url,
+                            pubDate: dateFormatted,
+                            pubTimestamp: pubDateObj.getTime(),
+                            thumbnail: vidId ? `https://i.ytimg.com/vi/${vidId}/hqdefault.jpg` : item.thumbnail
+                        };
+                    }).filter(v => v.youtubeId);
+                    if (videos.length > 0) {
+                        updateChannelBadge(channel.key, channel.name, 'ok', `${videos.length} فيديو`);
+                        return videos;
+                    }
+                }
+            } catch (e) { /* الانتقال للطريقة التالية */ }
+
+            // الطريقة 2: عبر AllOrigins Raw وتحليل XML
+            try {
+                const res2 = await fetchWithTimeout(`https://api.allorigins.win/raw?url=${encodedFeed}`);
+                const xmlText2 = await res2.text();
+                const videos2 = parseYouTubeXML(xmlText2, channel);
+                if (videos2.length > 0) {
+                    updateChannelBadge(channel.key, channel.name, 'ok', `${videos2.length} فيديو`);
+                    return videos2;
+                }
+            } catch (e) { /* الانتقال للطريقة التالية */ }
+
+            // الطريقة 3: عبر CorsProxy.io وتحليل XML
+            try {
+                const res3 = await fetchWithTimeout(`https://corsproxy.io/?${encodedFeed}`);
+                const xmlText3 = await res3.text();
+                const videos3 = parseYouTubeXML(xmlText3, channel);
+                if (videos3.length > 0) {
+                    updateChannelBadge(channel.key, channel.name, 'ok', `${videos3.length} فيديو`);
+                    return videos3;
+                }
+            } catch (e) { /* الانتقال للطريقة التالية */ }
+
+            // الطريقة 4: عبر CodeTabs Proxy وتحليل XML
+            try {
+                const res4 = await fetchWithTimeout(`https://api.codetabs.com/v1/proxy?quest=${encodedFeed}`);
+                const xmlText4 = await res4.text();
+                const videos4 = parseYouTubeXML(xmlText4, channel);
+                if (videos4.length > 0) {
+                    updateChannelBadge(channel.key, channel.name, 'ok', `${videos4.length} فيديو`);
+                    return videos4;
+                }
+            } catch (e) { /* فشل جميع البروكسيات */ }
+
+            updateChannelBadge(channel.key, channel.name, 'embed', 'وضع البث المباشر');
+            return [];
+        }
+
+        // دالة مزامنة القناتين معاً تلقائياً
+        async function syncAllChannels(showFeedback = false) {
+            const refreshIcon = document.getElementById('refresh-icon');
+            const refreshBtn = document.getElementById('refresh-videos-btn');
+            const statusText = document.getElementById('sync-status-text');
+            const grid = document.getElementById('videos-grid');
+
+            refreshIcon.classList.add('fa-spin');
+            refreshBtn.disabled = true;
+            statusText.textContent = 'جاري مزامنة الفيديوهات من القناتين...';
+
+            // عرض هيكل تحميل بصري واضح عند النقر على التحديث
+            grid.innerHTML = Array(6).fill(0).map(() => `
+                <div class="bg-[#1e293b]/70 border border-slate-800 rounded-2xl overflow-hidden animate-pulse">
+                    <div class="aspect-video bg-slate-800/90"></div>
+                    <div class="p-5 space-y-3">
+                        <div class="h-4 bg-slate-700/80 rounded w-3/4"></div>
+                        <div class="h-4 bg-slate-700/60 rounded w-1/2"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            const results = await Promise.all(CHANNELS_CONFIG.map(ch => fetchChannelRSS(ch)));
+            const combined = results.flat();
+
+            if (combined.length > 0) {
+                isFallbackPlaylistMode = false;
+                // ترتيب الفيديوهات من الأحدث إلى الأقدم تلقائياً
+                combined.sort((a, b) => (b.pubTimestamp || 0) - (a.pubTimestamp || 0));
+                allVideos = combined;
+                statusText.textContent = `تم تحديث ${allVideos.length} فيديو تلقائياً من القناتين`;
+                if (showFeedback) showToast(`تم تحديث ${allVideos.length} فيديو بنجاح من القناتين!`);
+            } else {
+                // تفعيل وضع قوائم التشغيل التلقائية الرسمية (UU...) في حال حظر الشبكة الخارجية في بيئة المعاينة
+                isFallbackPlaylistMode = true;
+                allVideos = [];
+                statusText.textContent = 'عرض قوائم أحدث الفيديوهات التلقائية المباشرة من يوتيوب';
+                if (showFeedback) showToast('تم تفعيل المشغل التلقائي المباشر لأحدث فيديوهات القناتين.');
+            }
+
+            renderVideos();
+            setTimeout(() => {
+                refreshIcon.classList.remove('fa-spin');
+                refreshBtn.disabled = false;
+            }, 400);
+        }
+
+        // عرض بطاقات الفيديوهات أو مشغلات قوائم الرفع التلقائية في الشبكة
+        function renderVideos() {
+            const grid = document.getElementById('videos-grid');
+
+            // في حال تفعيل وضع المشغل التلقائي لقوائم الرفع (UU...)
+            if (isFallbackPlaylistMode) {
+                const visibleChannels = CHANNELS_CONFIG.filter(ch => currentFilter === 'all' || ch.key === currentFilter);
+                grid.innerHTML = `
+                    <div class="col-span-full bg-cyan-950/30 border border-cyan-500/30 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-cyan-200 mb-2">
+                        <div class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-info text-cyan-400 text-lg shrink-0"></i>
+                            <span>تم تشغيل <strong>قوائم الرفع التلقائية الرسمية من يوتيوب</strong> لعرض أحدث الفيديوهات المضافة على القناتين مباشرة:</span>
+                        </div>
+                        <button onclick="syncAllChannels(true)" class="px-4 py-1.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs shrink-0 hover:bg-cyan-400 transition-colors">
+                            إعادة محاولة الجلب
+                        </button>
+                    </div>
+                    ${visibleChannels.map(ch => `
+                        <div class="col-span-full lg:col-span-1 bg-[#1e293b]/90 border border-slate-700/80 rounded-2xl overflow-hidden shadow-xl flex flex-col">
+                            <div class="px-5 py-3.5 bg-[#0f172a] border-b border-slate-800 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full ${ch.key === 'kbelectronics' ? 'bg-cyan-400' : 'bg-emerald-400'}"></span>
+                                    <h3 class="font-extrabold text-white text-base" dir="ltr">${ch.name}</h3>
+                                </div>
+                                <span class="text-[11px] px-2.5 py-1 rounded-lg bg-rose-500/15 text-rose-400 font-bold">أحدث الفيديوهات تلقائياً</span>
+                            </div>
+                            <div class="aspect-video w-full bg-black">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/videoseries?list=${ch.uploadsPlaylistId}" title="${ch.name} Latest Uploads" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                            <div class="p-4 flex items-center justify-between bg-[#1e293b]">
+                                <span class="text-xs text-slate-400 font-tajawal">يتحدث تلقائياً فور نشر أي فيديو جديد</span>
+                                <a href="${ch.url}" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-cyan-400 hover:underline flex items-center gap-1">
+                                    <span>فتح القناة</span>
+                                    <i class="fa-solid fa-arrow-up-left-from-square"></i>
+                                </a>
+                            </div>
+                        </div>
+                    `).join('')}
+                `;
+                if (visibleChannels.length === 2) {
+                    grid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-6';
+                } else {
+                    grid.className = 'grid grid-cols-1 gap-6';
+                }
+                return;
+            }
+
+            grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6';
+            const filtered = allVideos.filter(v => {
+                const matchesChannel = currentFilter === 'all' || v.channelKey === currentFilter;
+                const matchesSearch = !searchQuery || v.title.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesChannel && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-[#1e293b]/50 rounded-2xl border border-slate-800">
+                        <i class="fa-solid fa-film text-slate-500 text-3xl mb-3"></i>
+                        <p class="text-slate-400 font-bold">لا توجد فيديوهات مطابقة لبحثك حالياً.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(video => {
+                const isKB = video.channelKey === 'kbelectronics';
+                const badgeClass = isKB 
+                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' 
+                    : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+
+                return `
+                    <article class="bg-[#1e293b]/90 border border-slate-700/80 rounded-2xl overflow-hidden flex flex-col card-hover group">
+                        <div class="relative aspect-video bg-slate-900 overflow-hidden cursor-pointer" onclick="openVideoModal('${video.youtubeId}', '${video.title.replace(/'/g, "\\'")}', '${video.channelName}', '${video.channelUrl}')">
+                            <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.src='https://placehold.co/640x360/0f172a/06b6d4?text=K-Belectronics'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0b1120] via-transparent to-transparent opacity-80"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-14 h-14 rounded-full bg-rose-600/90 text-white flex items-center justify-center text-xl shadow-lg group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-play ml-0.5"></i>
+                                </div>
+                            </div>
+                            <span class="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-lg border backdrop-blur-md ${badgeClass}" dir="ltr">
+                                ${video.channelName}
+                            </span>
+                        </div>
+                        <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                            <h3 class="font-bold text-white text-base leading-snug line-clamp-2 group-hover:text-cyan-400 transition-colors cursor-pointer" onclick="openVideoModal('${video.youtubeId}', '${video.title.replace(/'/g, "\\'")}', '${video.channelName}', '${video.channelUrl}')">
+                                ${video.title}
+                            </h3>
+                            <div class="flex items-center justify-between pt-3 border-t border-slate-700/60 text-xs text-slate-400">
+                                <span class="flex items-center gap-1.5">
+                                    <i class="fa-regular fa-calendar text-cyan-400"></i>
+                                    <span>${video.pubDate}</span>
+                                </span>
+                                <a href="https://www.youtube.com/watch?v=${video.youtubeId}" target="_blank" rel="noopener noreferrer" class="text-slate-300 hover:text-rose-400 font-bold flex items-center gap-1 transition-colors">
+                                    <span>يوتيوب</span>
+                                    <i class="fa-solid fa-arrow-up-left-from-square text-[10px]"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        // أزرار التصفية حسب القناة
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('active', 'bg-cyan-500', 'text-slate-950', 'font-extrabold');
+                    b.classList.add('bg-slate-800/80', 'text-slate-300', 'font-bold');
+                });
+                btn.classList.add('active', 'bg-cyan-500', 'text-slate-950', 'font-extrabold');
+                btn.classList.remove('bg-slate-800/80', 'text-slate-300', 'font-bold');
+                currentFilter = btn.getAttribute('data-filter');
+                renderVideos();
+            });
+        });
+
+        // البحث الفوري في عناوين الفيديوهات
+        document.getElementById('video-search-input').addEventListener('input', (e) => {
+            searchQuery = e.target.value.trim();
+            renderVideos();
+        });
+
+        // مشغل الفيديو المنبثق
+        const videoModal = document.getElementById('video-modal');
+        const modalIframe = document.getElementById('modal-video-iframe');
+        const modalTitle = document.getElementById('modal-video-title');
+        const modalBadge = document.getElementById('modal-channel-badge');
+        const modalYtLink = document.getElementById('modal-youtube-link');
+
+        window.openVideoModal = function(youtubeId, title, channelName, channelUrl) {
+            modalTitle.textContent = title;
+            modalBadge.textContent = channelName;
+            modalYtLink.href = youtubeId ? `https://www.youtube.com/watch?v=${youtubeId}` : channelUrl;
+            modalIframe.src = youtubeId ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1` : '';
+            videoModal.classList.remove('hidden');
+        };
+
+        document.getElementById('close-video-modal').addEventListener('click', () => {
+            modalIframe.src = '';
+            videoModal.classList.add('hidden');
+        });
+
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) {
+                modalIframe.src = '';
+                videoModal.classList.add('hidden');
+            }
+        });
+
+        // زر التحديث اليدوي الفوري
+        document.getElementById('refresh-videos-btn').addEventListener('click', () => {
+            syncAllChannels(true);
+        });
+
+        // تشغيل المزامنة عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            syncAllChannels(false);
+        });
+    </script>
+<!-- بداية كود عداد الزوار - K-Belectronics -->
+<div dir="rtl" style="font-family: 'Cairo', Tahoma, Arial, sans-serif; display: flex; justify-content: center; padding: 15px;">
+  <div style="
+    background: linear-gradient(145deg, #0b1322, #111c32);
+    border: 1px solid #00f0ff44;
+    border-radius: 14px;
+    padding: 16px 26px;
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 0 15px rgba(0, 240, 255, 0.08);
+  ">
+    <!-- مؤشر الحالة الحي -->
+    <div style="position: relative; width: 12px; height: 12px;">
+      <span style="
+        display: block;
+        width: 12px;
+        height: 12px;
+        background-color: #00ff88;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #00ff88;
+      "></span>
+    </div>
+
+    <!-- النص والعنوان -->
+    <div style="text-align: right;">
+      <div style="color: #94a3b8; font-size: 13px; font-weight: bold; margin-bottom: 2px;">
+        <!-- بداية كود عداد الزوار المحلي - K-Belectronics -->
+<div dir="rtl" style="font-family: 'Cairo', Tahoma, Arial, sans-serif; display: flex; justify-content: center; padding: 15px;">
+  <div style="
+    background: linear-gradient(145deg, #0b1322, #111c32);
+    border: 1px solid #00f0ff44;
+    border-radius: 14px;
+    padding: 16px 26px;
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 0 15px rgba(0, 240, 255, 0.08);
+  ">
+    <!-- مؤشر الحالة الحي -->
+    <div style="position: relative; width: 12px; height: 12px;">
+      <span style="
+        display: block;
+        width: 12px;
+        height: 12px;
+        background-color: #00ff88;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #00ff88;
+      "></span>
+    </div>
+
+    <!-- النص والعنوان -->
+    <div style="text-align: right;">
+      <div style="color: #94a3b8; font-size: 13px; font-weight: bold; margin-bottom: 2px;">
+        زوار المختبر الإلكتروني
+      </div>
+      <div style="color: #64748b; font-size: 11px;">
+        K-Belectronics Lab
+      </div>
+    </div>
+
+    <!-- شاشة الرقم الرقمية -->
+    <div style="
+      background: #050a14;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 8px 16px;
+      min-width: 95px;
+      text-align: center;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
+    ">
+      <span id="kb-local-counter" style="
+        font-family: 'Courier New', monospace;
+        font-size: 24px;
+        font-weight: 800;
+        color: #00f0ff;
+        text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+        letter-spacing: 2px;
+      ">00000</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const counterEl = document.getElementById('kb-local-counter');
+    const storageKey = 'kb_pure_local_visits';
+    const sessionKey = 'kb_pure_local_session';
+
+    // تأثير حركة تصاعدية للأرقام
+    function animateCount(target) {
+      let current = 0;
+      const duration = 1000;
+      const stepTime = 20;
+      const steps = duration / stepTime;
+      const increment = Math.max(1, Math.ceil(target / steps));
+
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        counterEl.textContent = String(current).padStart(5, '0');
+      }, stepTime);
+    }
+
+    // قراءة الرقم الحالي أو البدء برقم أساسي (مثلاً 1250)
+    let visits = parseInt(localStorage.getItem(storageKey), 10);
+    if (isNaN(visits)) {
+      visits = 1250; 
+    }
+
+    // التحقق هل هذه الجلسة جديدة في هذا المتصفح
+    if (!sessionStorage.getItem(sessionKey)) {
+      visits += 1;
+      localStorage.setItem(storageKey, visits);
+      sessionStorage.setItem(sessionKey, 'active');
+    }
+
+    animateCount(visits);
+  })();
+</script>
+<!-- نهاية كود عداد الزوار المحلي -->
+
+</body>
+</html>
